@@ -7,8 +7,10 @@
   },
   "scripts": {
     "oauth": "bun ./app/index.ts",
-    "format": "bunx @biomejs/biome format --write ./src ./app",
-    "lint": "bunx @biomejs/biome lint --write ./src ./app"
+    "format": "biome format ./src ./app",
+    "format:fix": "biome format --write ./src ./app",
+    "lint": "biome lint ./src ./app",
+    "lint:fix": "biome lint --write ./src ./app"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
