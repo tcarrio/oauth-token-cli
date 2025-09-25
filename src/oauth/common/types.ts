@@ -15,4 +15,5 @@ export interface TokenResponse {
 export const OAuthFlow = {
   AuthorizationCode: "authorization-code",
   DeviceCode: "device-code",
+  ClientCredentials: "client-credentials",
 } as const;

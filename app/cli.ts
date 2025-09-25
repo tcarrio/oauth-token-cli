@@ -14,8 +14,9 @@ export type CliArgs = z.infer<typeof CliArgsSchema>;
 const CliArgsSchema = z.object({
   help: z.boolean().default(false),
   clientId: z.string(),
+  clientSecret: z.string().optional(),
   baseUrl: z.string(),
-  scopes: z.string(),
+  scopes: z.string().optional(),
   audience: z.string(),
   flow: z.string(),
   copy: z.boolean(),
@@ -61,6 +62,7 @@ async function parseCliArgsWithNodeUtil(): Promise<CliArgs> {
   const options = {
     help: booleanFlag("h", false),
     "client-id": stringFlag("i", Bun.env.OAUTH_CLIENT_ID ?? oauth.clientId),
+    "client-secret": stringFlag("S", Bun.env.OAUTH_CLIENT_SECRET ?? oauth?.clientSecret),
     "base-url": stringFlag("u", Bun.env.OAUTH_BASE_URL ?? oauth?.baseUrl),
     scopes: stringFlag("s", Bun.env.OAUTH_SCOPES ?? oauth?.scopes),
     audience: stringFlag("a", Bun.env.OAUTH_AUDIENCE ?? oauth?.audience),
@@ -91,6 +93,7 @@ async function parseCliArgsWithNodeUtil(): Promise<CliArgs> {
 
   return CliArgsSchema.parse({
     clientId: values["client-id"],
+    clientSecret: values["client-secret"],
     baseUrl: values["base-url"],
     scopes: values.scopes,
     audience: values.audience,

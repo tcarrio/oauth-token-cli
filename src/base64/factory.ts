@@ -1,4 +1,4 @@
-import { CurrentRuntime, Runtime } from "@cross/runtime";
+import { CurrentRuntime, type Runtime } from "@cross/runtime";
 import type { Base64Decoder, Base64Encoder, UrlSafeBase64Transformer } from "./types";
 import { WebBase64Format } from "./web-base64";
 

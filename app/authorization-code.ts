@@ -16,8 +16,14 @@ export async function runAuthorizationCodeFlow(
   { logger }: RunnerDeps,
   cliArgs: CliArgs,
 ): Promise<TokenResponse> {
+  if (!cliArgs.scopes) {
+    throw new Error(
+      "Scopes are required for authorization code flow. Use --scopes or set OAUTH_SCOPES environment variable.",
+    );
+  }
+
   const oauthConfig = AuthorizationCodePkceFlowOAuthConfig.fromConfigLike(
-    cliArgs as AuthorizationCodePkceFlowOAuthConfig,
+    { ...cliArgs, scopes: cliArgs.scopes } as AuthorizationCodePkceFlowOAuthConfig,
   );
   const listenerConfig = AuthorizationCodeListenerConfig.fromCallbackUrl(
     oauthConfig.callbackUrl,
