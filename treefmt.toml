@@ -1,0 +1,30 @@
+[formatter.biome]
+command = "biome"
+options = ["format", "--write"]
+includes = ["*.ts", "*.js", "*.json"]
+
+[formatter.yamlfmt]
+command = "yamlfmt"
+options = ["-w"]
+includes = ["*.yml", "*.yaml"]
+
+[formatter.alejandra]
+command = "alejandra"
+includes = ["*.nix"]
+
+[formatter.nixfmt]
+command = "nixfmt"
+includes = ["*.nix"]
+priority = 1
+
+[formatter.deadnix]
+command = "deadnix"
+options = ["--edit"]
+includes = ["*.nix"]
+priority = 2
+
+[formatter.statix]
+command = "statix"
+options = ["fix"]
+includes = ["*.nix"]
+priority = 3
