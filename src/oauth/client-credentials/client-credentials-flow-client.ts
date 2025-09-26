@@ -44,11 +44,17 @@ export class ClientCredentialsFlowOAuthClient {
       return await response.json();
     } catch (error) {
       if (error && typeof error === "object" && "response" in error) {
-        const httpError = error as { response: { text(): Promise<string>; status: number; statusText: string } };
+        const httpError = error as {
+          response: {
+            text(): Promise<string>;
+            status: number;
+            statusText: string;
+          };
+        };
         try {
           const errorBody = await httpError.response.text();
           throw new Error(
-            `OAuth token request failed (${httpError.response.status} ${httpError.response.statusText}): ${errorBody}`
+            `OAuth token request failed (${httpError.response.status} ${httpError.response.statusText}): ${errorBody}`,
           );
         } catch {
           // If we can't read the response body, fall back to the original error

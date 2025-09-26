@@ -9,5 +9,3 @@ export interface Base64Decoder {
 export interface UrlSafeBase64Transformer {
   toUrlSafe(input: string): string;
 }
-
-

@@ -22,9 +22,10 @@ export async function runAuthorizationCodeFlow(
     );
   }
 
-  const oauthConfig = AuthorizationCodePkceFlowOAuthConfig.fromConfigLike(
-    { ...cliArgs, scopes: cliArgs.scopes } as AuthorizationCodePkceFlowOAuthConfig,
-  );
+  const oauthConfig = AuthorizationCodePkceFlowOAuthConfig.fromConfigLike({
+    ...cliArgs,
+    scopes: cliArgs.scopes,
+  } as AuthorizationCodePkceFlowOAuthConfig);
   const listenerConfig = AuthorizationCodeListenerConfig.fromCallbackUrl(
     oauthConfig.callbackUrl,
   );

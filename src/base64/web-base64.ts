@@ -1,4 +1,8 @@
-import type { Base64Decoder, Base64Encoder, UrlSafeBase64Transformer } from "./types";
+import type {
+  Base64Decoder,
+  Base64Encoder,
+  UrlSafeBase64Transformer,
+} from "./types";
 
 export class WebBase64Format
   implements Base64Encoder, Base64Decoder, UrlSafeBase64Transformer

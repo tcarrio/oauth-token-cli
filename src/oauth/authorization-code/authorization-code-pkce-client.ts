@@ -95,7 +95,9 @@ export class AuthorizationCodePkceFlowOAuthClient {
 
     hasher.update(codeVerifier);
 
-    return this.urlSafeBase64Transformer.toUrlSafe(hasher.digest().toString("base64"));
+    return this.urlSafeBase64Transformer.toUrlSafe(
+      hasher.digest().toString("base64"),
+    );
   }
 
   private generateRandomState(): string {

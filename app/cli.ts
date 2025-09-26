@@ -62,7 +62,10 @@ async function parseCliArgsWithNodeUtil(): Promise<CliArgs> {
   const options = {
     help: booleanFlag("h", false),
     "client-id": stringFlag("i", Bun.env.OAUTH_CLIENT_ID ?? oauth.clientId),
-    "client-secret": stringFlag("S", Bun.env.OAUTH_CLIENT_SECRET ?? oauth?.clientSecret),
+    "client-secret": stringFlag(
+      "S",
+      Bun.env.OAUTH_CLIENT_SECRET ?? oauth?.clientSecret,
+    ),
     "base-url": stringFlag("u", Bun.env.OAUTH_BASE_URL ?? oauth?.baseUrl),
     scopes: stringFlag("s", Bun.env.OAUTH_SCOPES ?? oauth?.scopes),
     audience: stringFlag("a", Bun.env.OAUTH_AUDIENCE ?? oauth?.audience),
