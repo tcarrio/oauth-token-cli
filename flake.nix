@@ -38,6 +38,28 @@
           bunNix = ./nix/bun.nix;
           buildFlags = ["--compile" "--minify" "--sourcemap"];
         };
+        projectPackages = with pkgs; [
+          git
+          bun
+          bun2NixPkg
+          # Formatting tools - using compiled treefmt with project config
+          treefmtEval.config.build.wrapper
+          biome
+          yamlfmt
+          alejandra
+          nixfmt-classic
+          deadnix
+          statix
+        ];
+
+        mkShellApp = {name ? "script.sh", ...} @ opts:
+          pkgs.writeShellApplication (opts
+            // {
+              inherit name;
+              runtimeInputs = projectPackages; # TODO: Support additional packages
+            });
+
+        mkShellAppPath = opts: let app = mkShellApp opts; in "${app}/bin/${app.name}";
       in {
         packages = {
           default = oauth-token-cli;
@@ -46,21 +68,12 @@
 
         devShells = {
           default = pkgs.mkShell {
-            packages = with pkgs; [
-              git
-              bun
-              bun2NixPkg
-              # Formatting tools - using compiled treefmt with project config
-              treefmtEval.config.build.wrapper
-              biome
-              yamlfmt
-              alejandra
-              nixfmt-classic
-              deadnix
-              statix
-              # Git hooks
-              pre-commit
-            ];
+            packages =
+              projectPackages
+              ++ [
+                # Git hooks
+                pkgs.pre-commit
+              ];
 
             PROJECT_NAME = "@0xc/oauth-token-cli";
 
@@ -94,63 +107,73 @@
           # Install dependencies in CI
           ci-install = {
             type = "app";
-            program = "${pkgs.writeShellScript "ci-install" ''
-              echo "📦 Installing dependencies..."
-              echo "✅ Dependencies available via Nix"
-            ''}";
+            program = mkShellAppPath {
+              text = ''
+                echo "📦 Installing dependencies..."
+                echo "✅ Dependencies available via Nix"
+              '';
+            };
           };
 
           # Format check for CI
           ci-format = {
             type = "app";
-            program = "${pkgs.writeShellScript "ci-format" ''
-              set -e
-              echo "🎨 Checking formatting / linting..."
-              ${treefmtEval.config.build.wrapper}/bin/treefmt --fail-on-change
-              echo "✅ All files are properly formatted and linted"
-            ''}";
+            program = mkShellAppPath {
+              text = ''
+                set -e
+                echo "🎨 Checking formatting / linting..."
+                treefmt --fail-on-change
+                echo "✅ All files are properly formatted and linted"
+              '';
+            };
           };
 
           # Build and test for CI
           ci-build = {
             type = "app";
-            program = "${pkgs.writeShellScript "ci-build" ''
-              set -e
-              echo "🏗️ Building CLI..."
-              # Build command
-              nix build .#oauth-token-cli
-              # Test help command works
-              nix run .#oauth-token-cli -- --help
-              echo "✅ CLI built and help command works"
-            ''}";
+            program = mkShellAppPath {
+              text = ''
+                set -e
+                echo "🏗️ Building CLI..."
+                # Build command
+                nix build .#oauth-token-cli
+                # Test help command works
+                nix run .#oauth-token-cli -- --help
+                echo "✅ CLI built and help command works"
+              '';
+            };
           };
 
           # Test functionality for CI
           ci-test = {
             type = "app";
-            program = "${pkgs.writeShellScript "ci-test" ''
-              set -e
-              echo "🧪 Testing CLI functionality..."
-              # Test help command works
-              ${pkgs.bun}/bin/bun oauth --help
-              echo "✅ All tests passed"
-            ''}";
+            program = mkShellAppPath {
+              text = ''
+                set -e
+                echo "🧪 Testing CLI functionality..."
+                # Test help command works
+                bun oauth --help
+                echo "✅ All tests passed"
+              '';
+            };
           };
 
           # Comprehensive CI check
           ci-check = {
             type = "app";
-            program = "${pkgs.writeShellScript "ci-check" ''
-              set -e
-              echo "🚀 Running comprehensive CI checks..."
+            program = mkShellAppPath {
+              text = ''
+                set -e
+                echo "🚀 Running comprehensive CI checks..."
 
-              ${self.apps.${system}.ci-install.program}
-              ${self.apps.${system}.ci-format.program}
-              ${self.apps.${system}.ci-build.program}
-              ${self.apps.${system}.ci-test.program}
+                ${self.apps.${system}.ci-install.program}
+                ${self.apps.${system}.ci-format.program}
+                ${self.apps.${system}.ci-build.program}
+                ${self.apps.${system}.ci-test.program}
 
-              echo "✅ All CI checks passed successfully!"
-            ''}";
+                echo "✅ All CI checks passed successfully!"
+              '';
+            };
           };
         };
 
