@@ -44,8 +44,8 @@
               git
               bun
               bun2NixPkg
-              # Formatting tools
-              treefmt
+              # Formatting tools - using compiled treefmt with project config
+              treefmtEval.config.build.wrapper
               biome
               yamlfmt
               alejandra
@@ -62,8 +62,8 @@
               echo $ Started devshell for $PROJECT_NAME
               echo
               echo "Available formatting commands:"
-              echo "  treefmt        - Format all files"
-              echo "  treefmt --check - Check formatting"
+              echo "  treefmt              - Format all files"
+              echo "  treefmt --fail-on-change - Check formatting (CI mode)"
               echo
             '';
           };
