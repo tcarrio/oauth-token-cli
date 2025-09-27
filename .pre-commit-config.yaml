@@ -1,76 +1,48 @@
 # Pre-commit hooks configuration for OAuth Token CLI
 # This ensures all code is properly formatted and linted before committing
 repos:
-  # Step 1: Format and fix all files
+  # Auto-format and fix hooks that modify files
   - repo: local
     hooks:
-      - id: treefmt
-        name: Format all files with treefmt
-        entry: nix
-        args: [develop, --command, treefmt]
-        language: system
-        pass_filenames: false
-        always_run: true
-        stages: [pre-commit]
-        description: "Format all project files using treefmt (Biome, Alejandra, yamlfmt, etc.)"
-      - id: biome-lint-fix
-        name: Lint and fix TypeScript/JavaScript with Biome
-        entry: nix
-        args: [develop, --command, bun, run, 'lint:fix']
-        language: system
-        files: \.(ts|js|tsx|jsx|json)$
-        pass_filenames: false
-        stages: [pre-commit]
-        description: "Lint and auto-fix TypeScript/JavaScript files with Biome"
-      - id: deadnix
-        name: Remove dead Nix code
-        entry: nix
-        args: [develop, --command, deadnix, --edit, --no-lambda-arg, --no-lambda-pattern-names]
-        language: system
-        files: \.nix$
-        stages: [pre-commit]
-        description: "Remove dead code from Nix files"
-      - id: statix
-        name: Nix static analysis and fixes
-        entry: nix
-        args: [develop, --command, statix, fix]
-        language: system
-        files: \.nix$
-        stages: [pre-commit]
-        description: "Run static analysis and fixes on Nix files"
-  # Step 2: Stage all modified files
-  - repo: local
-    hooks:
-      - id: git-add-formatted
-        name: Stage formatted and fixed files
+      - id: auto-format-and-commit
+        name: Auto-format and stage files
         entry: bash
-        args: [-c, 'git add -A']
+        args: [-c, ' echo "🔧 Formatting and fixing all files..."; nix develop --command treefmt || exit 1; nix develop --command bun run lint:fix || exit 1; if [ -n "$(git diff --name-only)" ]; then echo "📝 Staging formatted files..."; git add -A; echo "✅ Files formatted and staged. Proceeding with commit..."; else echo "✅ No formatting changes needed."; fi ']
         language: system
         pass_filenames: false
         always_run: true
         stages: [pre-commit]
-        description: "Stage all files that were modified by formatters and linters"
-  # Step 3: Final validation (must pass or commit fails)
+        verbose: true
+        description: "Auto-format, fix, and stage all modified files"
+  # Validation hooks that must pass for commit to succeed
   - repo: local
     hooks:
-      - id: treefmt-check
-        name: Verify formatting is applied
+      - id: validate-formatting
+        name: Validate all files are properly formatted
         entry: nix
         args: [develop, --command, treefmt, --fail-on-change]
         language: system
         pass_filenames: false
         always_run: true
         stages: [pre-commit]
-        description: "Verify all files are properly formatted (final check)"
-      - id: biome-check
-        name: Verify linting is clean
+        description: "Ensure all files are properly formatted"
+      - id: validate-linting
+        name: Validate TypeScript/JavaScript linting
         entry: nix
         args: [develop, --command, bun, run, lint]
         language: system
         files: \.(ts|js|tsx|jsx|json)$
         pass_filenames: false
         stages: [pre-commit]
-        description: "Verify all TypeScript/JavaScript files pass linting (final check)"
+        description: "Ensure all TypeScript/JavaScript files pass linting"
+      - id: validate-nix-files
+        name: Validate Nix files
+        entry: bash
+        args: [-c, ' if [ -n "$(find . -name "*.nix" -not -path "./.git/*")" ]; then echo "🔍 Checking Nix files..."; nix develop --command deadnix --no-lambda-arg --no-lambda-pattern-names . && nix develop --command statix check .; fi ']
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+        description: "Validate Nix files are clean"
 # Global configuration
 default_stages: [pre-commit]
-fail_fast: true
+fail_fast: false

@@ -8,7 +8,9 @@
 			"Bash(bun run:*)",
 			"WebFetch(domain:github.com)",
 			"WebFetch(domain:raw.githubusercontent.com)",
-			"Bash(nix develop --command treefmt:*)"
+			"Bash(nix develop --command treefmt:*)",
+			"Bash(git add:*)",
+			"Bash(git reset:*)"
 		],
 		"deny": [],
 		"ask": []
