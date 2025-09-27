@@ -5,6 +5,7 @@
 		"oauth-token-cli": "./app/index.ts"
 	},
 	"scripts": {
+		"oauth": "./app/index.ts",
 		"format": "biome format ./src ./app",
 		"format:fix": "biome format --write ./src ./app",
 		"lint": "biome lint ./src ./app",
