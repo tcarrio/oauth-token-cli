@@ -62,7 +62,7 @@
               echo $ Started devshell for $PROJECT_NAME
               echo
               echo "Available formatting commands:"
-              echo "  treefmt              - Format all files"
+              echo "  treefmt                  - Format all files"
               echo "  treefmt --fail-on-change - Check formatting (CI mode)"
               echo
             '';
