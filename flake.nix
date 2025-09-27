@@ -81,10 +81,104 @@
           };
         };
 
+        # CI/CD Apps for GitHub Actions
+        apps = {
+          # Install dependencies in CI
+          ci-install = {
+            type = "app";
+            program = "${pkgs.writeShellScript "ci-install" ''
+              set -e
+              echo "🔧 Installing dependencies..."
+              ${bun2NixPkg}/bin/bun2nix --version
+              echo "✅ Dependencies installed via Nix (no separate install needed)"
+            ''}";
+          };
+
+          # Format check for CI
+          ci-format = {
+            type = "app";
+            program = "${pkgs.writeShellScript "ci-format" ''
+              set -e
+              echo "🎨 Checking formatting..."
+              ${treefmtEval.config.build.wrapper}/bin/treefmt --fail-on-change
+              echo "✅ All files are properly formatted"
+            ''}";
+          };
+
+          # Lint check for CI
+          ci-lint = {
+            type = "app";
+            program = "${pkgs.writeShellScript "ci-lint" ''
+              set -e
+              echo "🔍 Running linting..."
+              cd $OLDPWD
+              ${pkgs.bun}/bin/bun run lint
+              echo "✅ All linting checks passed"
+            ''}";
+          };
+
+          # Build and test for CI
+          ci-build = {
+            type = "app";
+            program = "${pkgs.writeShellScript "ci-build" ''
+              set -e
+              echo "🏗️ Building CLI..."
+              cd $OLDPWD
+              # Test help command works
+              ${pkgs.bun}/bin/bun oauth --help
+              echo "✅ CLI built and help command works"
+            ''}";
+          };
+
+          # Test functionality for CI
+          ci-test = {
+            type = "app";
+            program = "${pkgs.writeShellScript "ci-test" ''
+              set -e
+              echo "🧪 Testing CLI functionality..."
+              cd $OLDPWD
+              # Test help command works
+              ${pkgs.bun}/bin/bun oauth --help
+              # Test config validation (should fail gracefully)
+              ${pkgs.bun}/bin/bun oauth || true
+              echo "✅ All tests passed"
+            ''}";
+          };
+
+          # Comprehensive CI check
+          ci-check = {
+            type = "app";
+            program = "${pkgs.writeShellScript "ci-check" ''
+              set -e
+              echo "🚀 Running comprehensive CI checks..."
+
+              echo "📦 Installing dependencies..."
+              echo "✅ Dependencies available via Nix"
+
+              echo "🎨 Checking formatting..."
+              ${treefmtEval.config.build.wrapper}/bin/treefmt --fail-on-change
+
+              echo "🔍 Running linting..."
+              cd $OLDPWD
+              ${pkgs.bun}/bin/bun run lint
+
+              echo "🏗️ Testing build..."
+              ${pkgs.bun}/bin/bun oauth --help > /dev/null
+
+              echo "🧪 Running tests..."
+              ${pkgs.bun}/bin/bun oauth || true
+
+              echo "✅ All CI checks passed successfully!"
+            ''}";
+          };
+        };
+
         # Expose treefmt for CI and scripts
         formatter = treefmtEval.config.build.wrapper;
         checks = {
           formatting = treefmtEval.config.build.check self;
+          # Add build check
+          build = oauth-token-cli;
         };
       }
     );

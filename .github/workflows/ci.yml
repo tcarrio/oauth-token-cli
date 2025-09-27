@@ -8,6 +8,19 @@ on:
       - main
   workflow_dispatch:
 jobs:
+  # Comprehensive CI check using Nix flake
+  ci-check:
+    name: Comprehensive CI Check
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: DeterminateSystems/nix-installer-action@v20
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
+      - name: Run comprehensive CI checks
+        run: nix run .#ci-check
+  # Individual checks for better visibility
   lint-and-format:
     name: Lint and Format Check
     runs-on: ubuntu-22.04
@@ -17,12 +30,13 @@ jobs:
           fetch-depth: 0
       - uses: DeterminateSystems/nix-installer-action@v20
       - uses: DeterminateSystems/magic-nix-cache-action@v13
-      - name: Install dependencies
-        run: bun install
+      - name: Check dependencies
+        run: nix run .#ci-install
       - name: Check formatting
-        run: bun run format
+        run: nix run .#ci-format
       - name: Run linting
-        run: bun run lint
+        run: nix run .#ci-lint
+  # Flake validation
   flake-check:
     name: Flake Check
     runs-on: ubuntu-22.04
@@ -33,6 +47,9 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@v20
       - uses: DeterminateSystems/magic-nix-cache-action@v13
       - uses: DeterminateSystems/flake-checker-action@v12
+      - name: Nix flake check
+        run: nix flake check
+  # Build and functionality test
   build-test:
     name: Build and Test
     runs-on: ubuntu-22.04
@@ -42,13 +59,13 @@ jobs:
           fetch-depth: 0
       - uses: DeterminateSystems/nix-installer-action@v20
       - uses: DeterminateSystems/magic-nix-cache-action@v13
-      - name: Install dependencies
-        run: bun install
       - name: Build CLI
-        run: bun run oauth --help
+        run: nix run .#ci-build
       - name: Test CLI functionality
-        run: |-
-          # Test help command works
-          bun run oauth --help
-          # Test config validation (should fail gracefully)
-          bun run oauth || true
+        run: nix run .#ci-test
+      - name: Test compiled binary
+        run: |
+          # Build the actual binary
+          nix build .#oauth-token-cli
+          # Test the compiled binary works
+          ./result/bin/oauth-token-cli --help
