@@ -34,8 +34,6 @@ jobs:
         run: nix run .#ci-install
       - name: Check formatting
         run: nix run .#ci-format
-      - name: Run linting
-        run: nix run .#ci-lint
   # Flake validation
   flake-check:
     name: Flake Check

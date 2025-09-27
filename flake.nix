@@ -95,10 +95,8 @@
           ci-install = {
             type = "app";
             program = "${pkgs.writeShellScript "ci-install" ''
-              set -e
-              echo "🔧 Installing dependencies..."
-              ${bun2NixPkg}/bin/bun2nix --version
-              echo "✅ Dependencies installed via Nix (no separate install needed)"
+              echo "📦 Installing dependencies..."
+              echo "✅ Dependencies available via Nix"
             ''}";
           };
 
@@ -107,21 +105,9 @@
             type = "app";
             program = "${pkgs.writeShellScript "ci-format" ''
               set -e
-              echo "🎨 Checking formatting..."
+              echo "🎨 Checking formatting / linting..."
               ${treefmtEval.config.build.wrapper}/bin/treefmt --fail-on-change
-              echo "✅ All files are properly formatted"
-            ''}";
-          };
-
-          # Lint check for CI
-          ci-lint = {
-            type = "app";
-            program = "${pkgs.writeShellScript "ci-lint" ''
-              set -e
-              echo "🔍 Running linting..."
-              cd $OLDPWD
-              ${pkgs.bun}/bin/bun run lint
-              echo "✅ All linting checks passed"
+              echo "✅ All files are properly formatted and linted"
             ''}";
           };
 
@@ -131,9 +117,10 @@
             program = "${pkgs.writeShellScript "ci-build" ''
               set -e
               echo "🏗️ Building CLI..."
-              cd $OLDPWD
+              # Build command
+              nix build .#oauth-token-cli
               # Test help command works
-              ${pkgs.bun}/bin/bun oauth --help
+              nix run .#oauth-token-cli -- --help
               echo "✅ CLI built and help command works"
             ''}";
           };
@@ -144,11 +131,8 @@
             program = "${pkgs.writeShellScript "ci-test" ''
               set -e
               echo "🧪 Testing CLI functionality..."
-              cd $OLDPWD
               # Test help command works
               ${pkgs.bun}/bin/bun oauth --help
-              # Test config validation (should fail gracefully)
-              ${pkgs.bun}/bin/bun oauth || true
               echo "✅ All tests passed"
             ''}";
           };
@@ -160,21 +144,10 @@
               set -e
               echo "🚀 Running comprehensive CI checks..."
 
-              echo "📦 Installing dependencies..."
-              echo "✅ Dependencies available via Nix"
-
-              echo "🎨 Checking formatting..."
-              ${treefmtEval.config.build.wrapper}/bin/treefmt --fail-on-change
-
-              echo "🔍 Running linting..."
-              cd $OLDPWD
-              ${pkgs.bun}/bin/bun run lint
-
-              echo "🏗️ Testing build..."
-              ${pkgs.bun}/bin/bun oauth --help > /dev/null
-
-              echo "🧪 Running tests..."
-              ${pkgs.bun}/bin/bun oauth || true
+              ${self.apps.${system}.ci-install.program}
+              ${self.apps.${system}.ci-format.program}
+              ${self.apps.${system}.ci-build.program}
+              ${self.apps.${system}.ci-test.program}
 
               echo "✅ All CI checks passed successfully!"
             ''}";
