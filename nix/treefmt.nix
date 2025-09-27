@@ -27,6 +27,9 @@
 
   settings = {
     formatter = {
+      # Set up both formatting and linting with Biome
+      biome.formatCommand = "check";
+
       # Set up priority for Nix formatters to avoid conflicts
       alejandra.priority = 1;
       deadnix.priority = 2;
