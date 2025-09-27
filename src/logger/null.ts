@@ -1,19 +1,19 @@
 import type { Logger } from "./types";
 
 export class NullLogger implements Logger {
-	debug(...data: unknown[]): void {
-		/* no-op */
-	}
-	error(...data: unknown[]): void {
-		/* no-op */
-	}
-	info(...data: unknown[]): void {
-		/* no-op */
-	}
-	trace(...data: unknown[]): void {
-		/* no-op */
-	}
-	warn(...data: unknown[]): void {
-		/* no-op */
-	}
+  debug(..._data: unknown[]): void {
+    /* no-op */
+  }
+  error(..._data: unknown[]): void {
+    /* no-op */
+  }
+  info(..._data: unknown[]): void {
+    /* no-op */
+  }
+  trace(..._data: unknown[]): void {
+    /* no-op */
+  }
+  warn(..._data: unknown[]): void {
+    /* no-op */
+  }
 }

@@ -1,29 +1,29 @@
 import type {
-	Base64Decoder,
-	Base64Encoder,
-	UrlSafeBase64Transformer,
+  Base64Decoder,
+  Base64Encoder,
+  UrlSafeBase64Transformer,
 } from "./types";
 
 export class WebBase64Format
-	implements Base64Encoder, Base64Decoder, UrlSafeBase64Transformer
+  implements Base64Encoder, Base64Decoder, UrlSafeBase64Transformer
 {
-	constructor(private readonly urlSafe: boolean) {}
+  constructor(private readonly urlSafe: boolean) {}
 
-	public encode(input: string): string {
-		const encoded = btoa(input);
+  public encode(input: string): string {
+    const encoded = btoa(input);
 
-		if (!this.urlSafe) {
-			return encoded;
-		}
+    if (!this.urlSafe) {
+      return encoded;
+    }
 
-		return this.toUrlSafe(encoded);
-	}
+    return this.toUrlSafe(encoded);
+  }
 
-	public decode(input: string): string {
-		return atob(input);
-	}
+  public decode(input: string): string {
+    return atob(input);
+  }
 
-	public toUrlSafe(encoded: string): string {
-		return encoded.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
-	}
+  public toUrlSafe(encoded: string): string {
+    return encoded.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+  }
 }

@@ -5,9 +5,9 @@ export const Hour = 60 * Minute;
 export const Day = 24 * Hour;
 
 export const time = {
-	Millisecond,
-	Second,
-	Minute,
-	Hour,
-	Day,
+  Millisecond,
+  Second,
+  Minute,
+  Hour,
+  Day,
 };
