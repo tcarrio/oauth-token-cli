@@ -65,6 +65,12 @@
               echo "  treefmt                  - Format all files"
               echo "  treefmt --fail-on-change - Check formatting (CI mode)"
               echo
+              echo "Pre-commit hooks:"
+              echo "  pre-commit install       - Install hooks (already done)"
+              echo "  pre-commit run --all-files - Run hooks manually"
+              echo
+              echo "Hooks automatically run on commit to format, lint, and validate all files."
+              echo
             '';
           };
         };
