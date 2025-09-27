@@ -1,4 +1,3 @@
-import { CurrentRuntime, type Runtime } from "@cross/runtime";
 import type {
   Base64Decoder,
   Base64Encoder,
@@ -7,8 +6,6 @@ import type {
 import { WebBase64Format } from "./web-base64";
 
 export class Base64Factory {
-  // TODO: Use for supporting more platforms as necessary
-  private runtime: Runtime = CurrentRuntime;
 
   getEncoder(): Base64Encoder {
     return new WebBase64Format(false);

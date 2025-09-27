@@ -5,7 +5,9 @@
       "Bash(bun run lint:fix:*)",
       "Bash(bun run format:*)",
       "Bash(bun run format:fix:*)",
-      "Bash(bun run:*)"
+      "Bash(bun run:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ],
     "deny": [],
     "ask": []

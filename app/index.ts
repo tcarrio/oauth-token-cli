@@ -15,16 +15,20 @@ const RUNNERS: Record<string, OAuthFlowRunner> = {
   [OAuthFlow.ClientCredentials]: runClientCredentialsFlow,
 } as const;
 
-const args = await parseCliArgs();
+async function main() {
+  const args = await parseCliArgs();
 
-const logger = new ConsoleLogger(LogLevel[args.logLevel]);
-const runner = RUNNERS[args.flow] ?? RUNNERS[OAuthFlow.AuthorizationCode];
+  const logger = new ConsoleLogger(LogLevel[args.logLevel]);
+  const runner = RUNNERS[args.flow] ?? RUNNERS[OAuthFlow.AuthorizationCode];
 
-const tokenResponse = await runner({ logger }, args);
+  const tokenResponse = await runner({ logger }, args);
 
-if (args.copy) {
-  await clipboard.write(tokenResponse.access_token);
-  logger.info("Access token copied to clipboard");
-} else {
-  logger.info(tokenResponse);
+  if (args.copy) {
+    await clipboard.write(tokenResponse.access_token);
+    logger.info("Access token copied to clipboard");
+  } else {
+    logger.info(tokenResponse);
+  }
 }
+
+main().catch(console.error);
