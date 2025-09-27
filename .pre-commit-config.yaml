@@ -38,8 +38,12 @@ repos:
       - id: validate-nix-files
         name: Validate Nix files
         entry: bash
-        args: [-c, ' if [ -n "$(find . -name "*.nix" -not -path "./.git/*")" ]; then echo "🔍 Checking Nix files..."; nix develop --command deadnix --no-lambda-arg --no-lambda-pattern-names . && nix develop --command statix check .; fi ']
+        args:
+          - -c
+          - >-
+            echo "🔍 Checking Nix files..."; nix develop --command deadnix --no-lambda-arg --no-lambda-pattern-names .; nix develop --command statix check .
         language: system
+        files: \.nix$
         pass_filenames: false
         stages: [pre-commit]
         description: "Validate Nix files are clean"
