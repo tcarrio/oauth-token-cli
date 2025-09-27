@@ -35,7 +35,7 @@ The codebase is organized into several key layers:
 - **Utilities** - `random.ts`, `time.ts`, `enum.ts`
 
 ### Configuration
-- Supports JSON config files (`config.example.json` as template)
+- Supports JSON config files (`docs/config.example.json` as template)
 - Environment variable fallbacks for all CLI options
 - Configuration hierarchy: CLI args > environment vars > config file > defaults
 

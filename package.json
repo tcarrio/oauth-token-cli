@@ -1,28 +1,28 @@
 {
-  "name": "oauth-token-cli",
-  "version": "0.1.0",
-  "bin": {
-    "oauth-token-cli": "./app/index.ts"
-  },
-  "scripts": {
-    "oauth": "bun ./app/index.ts",
-    "format": "biome format ./src ./app",
-    "format:fix": "biome format --write ./src ./app",
-    "lint": "biome lint ./src ./app",
-    "lint:fix": "biome lint --write ./src ./app",
-    "postinstall": "bun2nix -o bun.nix"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^1.8.3",
-    "bun-types": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  },
-  "dependencies": {
-    "clipboardy": "^4.0.0",
-    "ky": "^1.5.0",
-    "shumai": "^0.1.2",
-    "zod": "^3.23.8"
-  }
+	"name": "oauth-token-cli",
+	"version": "0.1.0",
+	"bin": {
+		"oauth-token-cli": "./app/index.ts"
+	},
+	"scripts": {
+		"oauth": "bun ./app/index.ts",
+		"format": "biome format ./src ./app",
+		"format:fix": "biome format --write ./src ./app",
+		"lint": "biome lint ./src ./app",
+		"lint:fix": "biome lint --write ./src ./app",
+		"postinstall": "bun2nix -o nix/bun.nix"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.8.3",
+		"bun-types": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	},
+	"dependencies": {
+		"clipboardy": "^4.0.0",
+		"ky": "^1.5.0",
+		"shumai": "^0.1.2",
+		"zod": "^3.23.8"
+	}
 }

@@ -1,0 +1,14 @@
+{
+	"oauth": {
+		"clientId": "example-client-id",
+		"audience": "https://api.example.test",
+		"baseUrl": "https://auth.example.test",
+		"scopes": "openid profile email offline_access",
+		"callbackUrl": "https://localhost:3000/callback",
+		"flow": "device-code"
+	},
+	"logLevel": "info",
+	"output": {
+		"target": "tty"
+	}
+}

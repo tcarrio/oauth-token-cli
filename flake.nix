@@ -7,29 +7,34 @@
   inputs.bun2nix.url = "github:baileyluTCD/bun2nix";
   inputs.bun2nix.inputs.nixpkgs.follows = "nixpkgs";
 
-  outputs = { self, nixpkgs, flake-utils, treefmt-nix, bun2nix }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let 
+  outputs = {
+    self,
+    nixpkgs,
+    flake-utils,
+    treefmt-nix,
+    bun2nix,
+  }:
+    flake-utils.lib.eachDefaultSystem (
+      system: let
         pkgs = nixpkgs.legacyPackages.${system};
-        treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.toml;
+        treefmtEval = treefmt-nix.lib.evalModule pkgs ./nix/treefmt.nix;
         bun2NixPkg = bun2nix.packages.${system}.default;
-        mkBunDerivation = bun2nix.lib.${system}.mkBunDerivation;
-        
+        inherit (bun2nix.lib.${system}) mkBunDerivation;
+
         manifest = builtins.fromJSON (builtins.readFile ./package.json);
-        
+
         oauth-token-cli = mkBunDerivation {
           inherit (manifest) version;
           pname = "oauth-token-cli";
           index = manifest.bin.oauth-token-cli;
           src = ./.;
-          bunNix = ./bun.nix;
-          buildFlags = [ "--compile" "--minify" "--sourcemap" ];
+          bunNix = ./nix/bun.nix;
+          buildFlags = ["--compile" "--minify" "--sourcemap"];
         };
-      in
-      {
+      in {
         packages = {
           default = oauth-token-cli;
-          oauth-token-cli = oauth-token-cli;
+          inherit oauth-token-cli;
         };
 
         devShells = {
