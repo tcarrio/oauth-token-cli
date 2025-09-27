@@ -1,8 +1,8 @@
-name: Flake ❄️ Lock 🔒️ Updater ✨
+name: '❄️ Flake Lock Updater 🔒️'
 on:
   schedule:
     # Pi o'clock
-    - cron: '14 3 * * 1,4'
+    - cron: "14 3 * * 1,4"
   workflow_dispatch:
 jobs:
   lock-updater:
