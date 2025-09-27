@@ -71,6 +71,14 @@
               echo "  treefmt                  - Format all files"
               echo "  treefmt --fail-on-change - Check formatting (CI mode)"
               echo
+              echo "CI/CD commands (used by GitHub Actions):"
+              echo "  nix run .#ci-install     - Check dependencies"
+              echo "  nix run .#ci-format      - Check formatting"
+              echo "  nix run .#ci-lint        - Run linting"
+              echo "  nix run .#ci-build       - Test build"
+              echo "  nix run .#ci-test        - Test functionality"
+              echo "  nix run .#ci-check       - Run all CI checks"
+              echo
               echo "Pre-commit hooks:"
               echo "  pre-commit install       - Install hooks (already done)"
               echo "  pre-commit run --all-files - Run hooks manually"
